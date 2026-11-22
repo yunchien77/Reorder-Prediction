@@ -1,6 +1,4 @@
-# Instacart 回購預測（Group A, Team 9）
-
-預測使用者最後一張訂單中，哪些「以前買過的商品」會再買。使用者層級 5-fold 交叉驗證，54 個特徵，指標 AUPRC / F1。
+# Instacart 回購預測
 
 ## 0. 前置安裝
 
@@ -10,7 +8,8 @@ conda activate imba
 pip install -r requirements.txt
 ```
 
-資料從 Kaggle 的 [Instacart Market Basket Analysis](https://www.kaggle.com/datasets/psparks/instacart-market-basket-analysis) 下載，解壓縮到 `dataset/raw/`（需要 `orders.csv`、`order_products__prior.csv`、`order_products__train.csv`、`products.csv`）。
+資料從 Kaggle 的 [Instacart Market Basket Analysis](https://www.kaggle.com/datasets/psparks/instacart-market-basket-analysis) 下載，解壓縮到 `dataset/raw/`
+（需要 `orders.csv`、`order_products__prior.csv`、`order_products__train.csv`、`products.csv`）。
 
 以下指令都在 `src/` 底下執行：
 
@@ -45,16 +44,20 @@ python -m model.lr                             # 同理：rf、lgbm、xgb、cat�
 
 ## 4. Ensemble 與決策規則
 
+需先跑完 xgb、lgbm、cat、mlp。
+
 ```bash
 python -m ensemble.blend --name ens54_mean --mode mean --members xgb lgbm catboost mlp
 python -m ensemble.weights --members xgb lgbm catboost mlp   # 各種權重
-python -m ensemble.decision --model xgb                                                          # 共用門檻 vs 每人期望 F1
+python -m ensemble.decision --model xgb                      # 共用門檻 vs 每人期望 F1（也可換 --model ens54_mean）
 ```
 
 ## 5. 分析
 
+`robustness` 需先跑完規則、xgb 與 `ens54_mean`。
+
 ```bash
 python -m analysis.ablation --model xgb   # 特徵類別消融（可換 lgbm、cat、lr、rf、mlp）
-python -m analysis.importance    # 特徵重要度
-python -m analysis.robustness    # 分群與 bootstrap
+python -m analysis.importance             # 特徵重要度（XGBoost，5 fold）
+python -m analysis.robustness             # 分群穩健性與 bootstrap（5 fold）
 ```
