@@ -1,0 +1,15 @@
+dataset/
+features/
+results/
+
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+catboost_info/
+*.lock
+*.log
+
+.vscode/
+.idea/
+.DS_Store
