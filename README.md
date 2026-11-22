@@ -61,3 +61,14 @@ python -m analysis.ablation --model xgb   # 特徵類別消融（可換 lgbm、c
 python -m analysis.importance             # 特徵重要度（XGBoost，5 fold）
 python -m analysis.robustness             # 分群穩健性與 bootstrap（5 fold）
 ```
+
+## 6. External Data
+
+資料放在 `dataset/external/`：`foodkeeper/foodkeeper.json`（[FoodKeeper](https://catalog.data.gov/dataset/fsis-foodkeeper-data)）、`fdc/branded/`（[FoodData Central](https://fdc.nal.usda.gov/download-datasets) 的 Branded Foods CSV，解壓出 `food.csv`、`branded_food.csv`、`food_nutrient.csv`）、`off/en.openfoodfacts.org.products.csv.gz`（[Open Food Facts](https://world.openfoodfacts.org/data)）。
+
+外部特徵不動原本 54 個，另存 `features/external/`；沒配對到就是缺失值。
+
+```bash
+python -m external.build                       # 建商品層級外部特徵（fk / fdc / off）
+python -m analysis.external --thr 0.9 0.8      # 原本 54 個 + 外部特徵（XGBoost，5 折），結果 results/external.csv
+```
