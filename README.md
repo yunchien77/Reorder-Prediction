@@ -72,3 +72,12 @@ python -m analysis.robustness             # 分群穩健性與 bootstrap（5 fol
 python -m external.build                       # 建商品層級外部特徵（fk / fdc / off）
 python -m analysis.external --thr 0.9 0.8      # 原本 54 個 + 外部特徵（XGBoost，5 折），結果 results/external.csv
 ```
+
+## 7. 商品向量特徵
+
+不動原本 54 個，另加「商品與使用者先前買過的東西有多像」。兩種向量：`i2v`（只用當折 train 使用者的訂單學的 item2vec 類向量，不是外部資料）、`txt`（預訓練 all-MiniLM-L6-v2 吃商品名稱，需 `pip install "sentence-transformers==3.4.1" "transformers==4.49.0"`，會下載模型）。輸出 `features/embed/`。
+
+```bash
+python -m embed.build                          # 向量與相似度特徵（5 折）
+python -m analysis.embed                       # 原本 54 個 + 向量特徵（XGBoost，5 折），結果 results/embed.csv
+```

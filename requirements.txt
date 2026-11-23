@@ -10,3 +10,5 @@ xgboost==3.2.0
 lightgbm==4.7.0
 catboost==1.2.10
 torch==2.5.1+cu121
+transformers==4.49.0            # 只有 embed.build 的文字向量需要（torch 2.5.1 相容版）
+sentence-transformers==3.4.1
