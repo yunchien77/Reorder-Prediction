@@ -80,4 +80,15 @@ python -m analysis.external --thr 0.9 0.8      # 原本 54 個 + 外部特徵（
 ```bash
 python -m embed.build                          # 向量與相似度特徵（5 折）
 python -m analysis.embed                       # 原本 54 個 + 向量特徵（XGBoost，5 折），結果 results/embed.csv
+python -m analysis.segments_ext                # 外部資料 / 向量特徵在各分群的 AUPRC 差，結果 results/segments_ext.csv（需先跑完上面兩個 build）
+```
+
+## 8. 序列模型
+
+LSTM / GRU / Transformer：每個（使用者, 商品）取最近 24 張 prior 訂單的序列。`hybrid` 同時輸入 54 個特徵，`--seq-only` 只輸入序列。GPU 記憶體約需 10 GB，連續跑多折可能 OOM，建議一次跑一折。
+
+```bash
+python -m model.seq --kind lstm gru transformer --folds 1   # 加 --seq-only 為只有序列；結果寫入 results/results.csv
+python -m ensemble.blend --name ens_seq_mean --mode mean --members xgb lgbm catboost mlp lstm_hybrid gru_hybrid transformer_hybrid
+python -m analysis.results_addons              # 把序列模型與分群結果補進 RESULTS.md 第 1、2、11、12 節
 ```
